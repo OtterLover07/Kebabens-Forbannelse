@@ -20,7 +20,7 @@ class Item
         return @location
     end
 
-    def used
+    def used?
         return @used
     end
 
@@ -52,10 +52,11 @@ end
 
 #global variabel
 $items = []
-$location = "bakom_bion"
+$location = "jarntorget"
 $money = 15
 $harBaby
 $kastatBaby = false
+TextSpeed = 1
 
 def getItem(query)
     i = 0
@@ -77,29 +78,40 @@ def init()
     else
         # $items << Item.new(name, location, usable_with, useLocation)
         $items << Item.new("nyckel", "bakom_bion", "dörr", "bakom_bion")
-        $items << Item.new("baby", "boltcutterStore", ["dörr", "fönster"], ["bakom_bion", "boltcutterStore"])
+        $items << Item.new("boltcutters", "boltcutterStore", "grind", "framfor_bion")
     end
 end
 
 def action()
     while true
-        puts ""
+        sleep TextSpeed
         puts ""
         puts "Vad vill du göra?"
         puts ""
-        user_input = gets.chomp.split
+        user_input = gets.chomp.downcase.split
+        puts ""
         while user_input[0] != "quit"
             if user_input[0] == "hjälp"
                 puts ""
                 puts "Giltiga kommandon:"
+                puts "  - 'kolla'"
                 puts "  - 'kolla x'"
                 puts "  - 'gå x'"
                 puts "  - 'ta x'"
                 puts "  - 'använd x y'"
+                puts "  - 'öppna x'"
                 puts "  - 'kasta x'"
                 puts "  - 'hjälp'"
                 puts "  - 'quit'"
                 
+            elsif user_input[0] == "kolla"
+                if user_input[1] != nil
+                    return "kolla " + user_input[1]
+                else
+                    return "kolla"
+                end
+            elsif user_input[0] == "gå"
+                return "gå " + user_input[1]
             elsif user_input[0] == "ta"
                 item = getItem(user_input[1])
                 if item == nil
@@ -108,9 +120,6 @@ def action()
                     item.pick_up
                 end
                 return false
-            elsif user_input[0] == "gå"
-                return "gå " + user_input[1]
-                
             elsif user_input[0] == "använd"
                 item = getItem(user_input[1])
                 if item != nil
@@ -119,15 +128,13 @@ def action()
                     end
                 end
                 return false
-               
-            elsif user_input[0] == "kolla"
-                return "kolla " + user_input[1]
-
+            elsif user_input[0] == "öppna"
+                return "öppna " + user_input[1]
             elsif user_input[0] == "kasta"
                 item = getItem(user_input[1])
                 if user_input[1] == "baby" && $harBaby
                     return "kasta baby"
-                elsif item != nil && !item.used
+                elsif item != nil && !item.used?
                     puts "Det är nog inte den bästa idén att slänga iväg den..."
                 else
                     puts "Du har ingen " + user_input[1] + "."
@@ -136,6 +143,7 @@ def action()
                 puts "Ogiltig handling, försök igen."
             end
             puts ""
+            sleep TextSpeed
             puts "Vad vill du göra?"
             puts ""
             user_input = gets.chomp.split
@@ -147,46 +155,182 @@ end
 def beginning()
     puts "And the adventure begins!"
     puts ""
+    sleep TextSpeed
+end
+
+def jarntorget()
+    while true
+        action = action() #ex.=> "kolla dörrmatta"
+        if action == "placeholder"
+            
+        elsif action == "gå långgatan"
+            puts "Du går fram till långgatan."
+            $location = "långgatan"
+            return nil
+        elsif action == "gå spårvagn"
+            puts "Du går till spårvagnen. Den kommer om 20min. Whelp, dags att vänta."
+            sleep TextSpeed
+            puts "[20min later]"
+            sleep TextSpeed
+            puts "Du hoppar på. Vagnen är tom förutom föraren. Blir avkickad vid stigbergstorget för att ha plankat."
+            $location = "stigbergstorget"
+            return nil
+        elsif action == "gå tillbaka"
+            puts "Det finns ingen annan plats att gå."
+        elsif action == "kasta baby"
+            puts "Babyn faller till marken med en duns, och den börjar gråta."
+            sleep TextSpeed
+            puts "Du är i samma situation som innan, men nu med en gråtande baby. Grattis."
+            $kastatBaby = true
+        elsif action == "kolla"
+            return nil
+        end
+    end
+end
+
+def langgatan()
+    while true
+        action = action() #ex.=> "kolla dörrmatta"
+        if action == "placeholder"
+
+        elsif action == "placeholder"
+            
+            
+        elsif action == "gå tillbaka"
+            puts "Du går tillbaka till Järntorget."
+            $plats == "framför_bion"
+            return nil
+        elsif action == "kasta baby"
+            puts "Babyn faller till marken med en duns, och den börjar gråta."
+            puts "Du är i samma situation som innan, men nu med en gråtande baby. Grattis."
+            $kastatBaby = true
+        elsif action == "kolla"
+            return nil
+        end
+    end
+end
+
+def boltcutterStore()
+    while true
+        action = action() #ex.=> "kolla dörrmatta"
+        if action == "placeholder"
+
+        elsif action == "köp boltcutters" # ROBIN SKRIV NÄR DU KAN PLS THANK UU <3
+            
+        elsif action == "gå tillbaka"
+            puts "Du går tillbaka till Långgatan."
+            $plats == "framför_bion"
+            return nil
+        elsif action == "kasta baby"
+            puts "Babyn faller till marken med en duns, och den börjar gråta."
+            puts "Du är i samma situation som innan, men nu med en gråtande baby. Grattis."
+            $kastatBaby = true
+        elsif action == "kolla"
+            return nil
+        end
+    end
+end
+
+def stigbergstorget()
+    while true
+        action = action() #ex.=> "kolla dörrmatta"
+        if action == "placeholder"
+
+        elsif action == "gå framför_bion"
+            puts "Du går fram till bion. De verkar ha stängt."
+            $location = "framfor_bion"
+            return nil
+        elsif action == "gå tillbaka"
+            puts "Du väntar in nästa 3:a och åker tillbaka till Järntorget."
+            $plats == "järntorget"
+            return nil
+        elsif action == "kasta baby"
+            puts "Babyn faller till marken med en duns, och den börjar gråta."
+            sleep TextSpeed
+            puts "Du är i samma situation som innan, men nu med en gråtande baby. Grattis."
+            $kastatBaby = true
+        elsif action == "kolla"
+            return nil
+        end
+    end
 end
 
 def framfor_bion()
     puts "Du står framför en midre bio"
+    sleep TextSpeed
+    puts "Framför dig har du en dörr in i byggnaden, och vid sidan en grind till baksidan."
+    while true
+        action = action() #ex.=> "kolla dörrmatta"
+        if action == "placeholder"
+            
+        elsif action == "använd boltcutters"
+            puts "låset faller ner på marken med ett kling, och grinden öppnas."
+        elsif action == "gå grind"
+            if getItem(boltcutters).used?
+                puts "Du går in bakom bion."
+                $location = "bakom_bion"
+                return nil
+            else
+                puts "Du går in i grinden. Babyn skrattar lite."
+            end
+        elsif action == "gå tillbaka"
+            puts "Du går tillbaka till Stigbergstorget."
+            $plats == "stigbergstorget"
+            return nil
+        elsif action == "kasta baby"
+            puts "Babyn faller till marken med en duns, och den börjar gråta."
+            sleep TextSpeed
+            puts "Du är i samma situation som innan, men nu med en gråtande baby. Grattis."
+            $kastatBaby = true
+        elsif action == "kolla"
+            return nil
+        end
+    end
 end
 
 def bakom_bion()
     puts ""
     puts "Du är nu bakom bion. Du ser en röten bakdörr i skenet av lampan över den."
+    sleep TextSpeed
     puts "Framför dörren ser du en liten matta med ordet 'Välkommen' i kursiv stil."
     while true
         action = action() #ex.=> "kolla dörrmatta"
         if action == "kolla dörrmatta"
             puts "Du tittar under dörrmattan och ser en nyckel. Ksk bör prova den på dörren."
-        elsif action == "kasta baby"
-            puts "Babyn faller till marken med en duns, och börjar gråta."
-            puts "Du är i samma situation som innan, men med en gråtande baby. Gratulationer."
-            $kastatBaby = true
-        elsif action == "öppna dörr"
+        elsif action == "öppna dörr" || action == "gå dörr"
             puts "Dörren är låst."
-        elsif action == "gå tillbaka"
-            $plats == "framför_bion"
-            return nil
         elsif action == "använd nyckel"
             puts "Du prövar nyckeln i hålet, och hör hur låset låter ifrån sig ett klick."
+            sleep TextSpeed
             puts "Du puttar lite lätt på dörren, och dörren ger vika. Du går in i bion."
             puts ""
             ending()
+        elsif action == "gå tillbaka"
+            puts "Du går tillbaka till bions framsida."
+            $plats == "framfor_bion"
+            return nil
+        elsif action == "kasta baby"
+            puts "Babyn faller till marken med en duns, och den börjar gråta."
+            sleep TextSpeed
+            puts "Du är i samma situation som innan, men nu med en gråtande baby. Grattis."
+            $kastatBaby = true
+        elsif action == "kolla"
+            return nil
         end
     end
 end
 
 def ending()
     puts "Du vaknar upp på toaletten på bion, extremt hangover."
+    sleep TextSpeed
     puts "Du kollar telefonen, det är morgon. Du går ut och njutar av dagen, med en lätt bismak av kebab."
     if $kastatBaby
         puts ""
+        sleep TextSpeed
         puts "Sen blir du arresterad för våld mot barn. Rätt åt dig!"
     end
     puts ""
+    sleep TextSpeed
     puts "[tryck enter för att avsluta]"
     gets
     exit
@@ -199,12 +343,18 @@ def main()
     puts "\e[H\e[2J"
     beginning()
     while true
-        if $location == "bakom_bion"
-            bakom_bion()
+        if $location == "jarntorget"
+            jarntorget()
+        elsif $location == "langgatan"
+            langgatan()
+        elsif $location == "boltcutterStore"
+            boltcutterStore
+        elsif $location == "stigbergstorget"
+            stigbergstorget()
         elsif $location == "framfor_bion"
             framfor_bion()
-        elsif $location == ""
-        elsif $location == ""       
+        elsif $location == "bakom_bion"
+            bakom_bion()
         else
             raise "ERROR: Location Not Found"
         end
