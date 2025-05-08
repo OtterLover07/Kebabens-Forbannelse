@@ -32,6 +32,7 @@ class Item
         else
             @held = true
             puts "Du plockar upp " + name + "."
+            return true
         end
         return false
     end
@@ -53,10 +54,9 @@ end
 #global variabel
 $items = []
 $location = "jarntorget"
-$money = 15
-$harBaby
+$harBaby = false
 $kastatBaby = false
-TextSpeed = 1
+TextSpeed = 0.5
 
 def getItem(query)
     i = 0
@@ -79,6 +79,7 @@ def init()
         # $items << Item.new(name, location, usable_with, useLocation)
         $items << Item.new("nyckel", "bakom_bion", "dörr", "bakom_bion")
         $items << Item.new("boltcutters", "boltcutterStore", "grind", "framfor_bion")
+        $items << Item.new("pengar", "jarntorget", "Henrik", "boltcutterStore")
     end
 end
 
@@ -135,7 +136,7 @@ def action()
                 if user_input[1] == "baby" && $harBaby
                     return "kasta baby"
                 elsif item != nil && !item.used?
-                    puts "Det är nog inte den bästa idén att slänga iväg den..."
+                    puts "Det är nog inte den bästa idén att kasta bort den..."
                 else
                     puts "Du har ingen " + user_input[1] + "."
                 end
@@ -160,9 +161,13 @@ end
 
 def jarntorget()
     while true
+        puts "Vid spårvagnshållplatserna står fontänen."
+
         action = action() #ex.=> "kolla dörrmatta"
-        if action == "placeholder"
-            
+        if action == "kolla fontän"
+            puts "Du tittar ner i fontänen, och ser en massa mynt."
+            sleep TextSpeed
+            puts "Det måste ju vara minst 500 kr!"
         elsif action == "gå långgatan"
             puts "Du går fram till långgatan."
             $location = "långgatan"
