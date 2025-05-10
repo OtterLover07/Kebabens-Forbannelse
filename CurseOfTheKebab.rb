@@ -218,11 +218,12 @@ def action()
                 nope = 0
                 while i < $items.length
                     if $items[i].held?
-                        if nope == i
+                        if nope == 0
                             puts "Du har:"
                         end
                         print " - "
                         puts $items[i].name
+                        nope += 1
                     else
                         nope += 1
                     end
