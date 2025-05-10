@@ -115,7 +115,6 @@ def init()
         $harBaby = f[i+1].chomp
         $kastatBaby = f[i+2].chomp
         $buyFails = f[i+3].chomp
-        #debug
         itemDebug()
     else
         # $items << Item.new(name, location, usable_with, useLocation)
@@ -137,6 +136,7 @@ def save()
     file.puts $kastatBaby
     file.puts $buyFails
     file.close
+    puts "Sparat!"
 end
 
 def action()
@@ -213,17 +213,22 @@ def action()
                     puts "Du har ingen " + user_input[1] + "."
                 end
             elsif user_input[0] == "ficka"
+                puts ""
                 i = 0
                 nope = 0
                 while i < $items.length
                     if $items[i].held?
+                        if nope == i
+                            puts "Du har:"
+                        end
+                        print " - "
                         puts $items[i].name
                     else
                         nope += 1
                     end
                     i += 1
                 end
-                if nope = $items.length
+                if nope == $items.length
                     puts "Du har inget i fickorna."
                 end
             else
@@ -464,7 +469,7 @@ def main()
     init()
 
     puts "Loading complete!"
-    # puts "\e[H\e[2J"
+    puts "\e[H\e[2J" #comment for debug during setup
     intro()
     while true
         puts ""
@@ -488,6 +493,5 @@ def main()
 end
 
 
-##################TESTKOD NEDANFÖR##########################
 
 main()
