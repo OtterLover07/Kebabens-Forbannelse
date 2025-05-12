@@ -86,6 +86,15 @@ $kastatBaby = false
 $buyFails = 0
 TextSpeed = 0
 
+# Beskrivning:         Söker igenom arrayen '$items' efter en viss sträng, och returnerar strängen om den existerar, annars returnerar den nil. (aka söker i inventorty)
+# Argument 1:          Sträng - strängen som letas efter
+# Argument 2:          Den globala arrayen '$items'
+# Return:              Sträng/nil - returnerar strängen inuti '$items' om den finns, annars returnerar den nil.
+# Exempel:
+# $items = ["pengar", "baby"]     
+# getItem("pengar") #=> "pengar"
+# getItem("baby") #=> "baby"
+# getItem("boltcutters") #=> nil
 def getItem(query)
     i = 0
     while i < $items.length
@@ -123,6 +132,19 @@ def init()
         $items << Item.new("pengar", "jarntorget", "Henrik", "boltcutterStore")
     end
 end
+
+
+# Beskrivning:         Sparar relevanta variabler i textfilen savefile.txt
+# Argument 1:          Alla strängar i arrayen '$items', samt strängar som tilldelats variablerna '$location', '$harBaby', '$ksatatBaby' & '$byFails'
+# Return 1:            Strängar tilldelade samtliga variabler ovan nerskrivna i textfilen 'savefile.txt'
+# Return 2:            "Sparat!" utskrivet i terminalen(puts).
+# Exempel:         
+# save()  (Arg1: $items = {"sak", "sak2"}, $location = "stigbergstorget", $harBaby = true, $kastatBaby = true, $buyFails = 2) ==> Return1: Skriver 
+...  ...  ...  ...
+...  ...  ...  ...
+...  ...  ...  ...     
+# Datum:               25-05-10
+# Namn:                Robin A. & Melker W.
 
 def save()
     file = File.open("savefile.txt", "w+")
@@ -479,7 +501,7 @@ def main()
         elsif $location == "langgatan"
             langgatan()
         elsif $location == "boltcutterStore"
-            boltcutterStore
+            boltcutterStore()
         elsif $location == "stigbergstorget"
             stigbergstorget()
         elsif $location == "framfor_bion"
