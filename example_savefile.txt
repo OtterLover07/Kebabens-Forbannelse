@@ -1,0 +1,7 @@
+nyckel;;bakom_bion;;dörr;;bakom_bion;;false;;false;;
+boltcutters;;boltcutterStore;;grind;;framfor_bion;;false;;false;;
+pengar;;jarntorget;;Henrik;;boltcutterStore;;false;;false;;
+jarntorget
+false
+false
+0

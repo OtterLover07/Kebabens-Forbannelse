@@ -86,14 +86,15 @@ $kastatBaby = false
 $buyFails = 0
 TextSpeed = 0
 
-# Beskrivning:         Söker igenom arrayen '$items' efter en viss sträng, och returnerar strängen om den existerar, annars returnerar den nil. (aka söker i inventorty)
-# Argument 1:          Sträng - strängen som letas efter
+# Beskrivning:         Söker igenom arrayen '$items' efter en viss sträng, och returnerar strängen om den existerar, annars returnerar den nil. (aka söker i inventory)
+# Argument 1:          Sträng - '@name' i item:et som letas efter
 # Argument 2:          Den globala arrayen '$items'
-# Return:              Sträng/nil - returnerar strängen inuti '$items' om den finns, annars returnerar den nil.
+# Return:              Sträng/nil - returnerar objektet inuti '$items' med matchande namn om det finns, annars returneras nil.
 # Exempel:
-# $items = ["pengar", "baby"]     
-# getItem("pengar") #=> "pengar"
-# getItem("baby") #=> "baby"
+# $items = [{Item["pengar", "jarntorget", "henrik", "boltcutterStore", true, false]}, {Item["baby", "langgatan", "dörr", "bakom_bion", false, false]}]     
+# getItem("pengar") #=> {Item["pengar", "jarntorget", "henrik", "boltcutterStore"]}
+# getItem("pengar").held? #=> true
+# getItem("baby").name #=> "baby"
 # getItem("boltcutters") #=> nil
 def getItem(query)
     i = 0
@@ -129,18 +130,18 @@ def init()
         # $items << Item.new(name, location, usable_with, useLocation)
         $items << Item.new("nyckel", "bakom_bion", "dörr", "bakom_bion")
         $items << Item.new("boltcutters", "boltcutterStore", "grind", "framfor_bion")
-        $items << Item.new("pengar", "jarntorget", "Henrik", "boltcutterStore")
+        $items << Item.new("pengar", "jarntorget", "henrik", "boltcutterStore")
     end
 end
 
 
 # Beskrivning:         Sparar relevanta variabler i textfilen savefile.txt
-# Argument 1:          Alla strängar i arrayen '$items', samt strängar som tilldelats variablerna '$location', '$harBaby', '$ksatatBaby' & '$byFails'
-# Return 1:            Strängar tilldelade samtliga variabler ovan nerskrivna i textfilen 'savefile.txt'
+# Argument 1:          Alla objekt i arrayen '$items', samt de värden som tilldelats variablerna '$location', '$harBaby', '$kastatBaby' & '$buyFails'
+# Return 1:            Värden tilldelade samtliga variabler ovan utskrivna i textfilen 'savefile.txt'
 # Return 2:            "Sparat!" utskrivet i terminalen(puts).
 # Exempel:         
-# save()  (Arg1: $items = {"sak", "sak2"}, $location = "stigbergstorget", $harBaby = true, $kastatBaby = true, $buyFails = 2) ==> Return1: Skriver 
-...  ...  ...  ...
+# save()  (Arg1: $items = [{item1}, {item2}], $location = "stigbergstorget", $harBaby = true, $kastatBaby = true, $buyFails = 2) ==> Return1: savefile.txt; Return2: Terminal #> "Sparat!"
+# (Se example_savefile.txt för hur en sparfil kan se ut.)
 ...  ...  ...  ...
 ...  ...  ...  ...     
 # Datum:               25-05-10
@@ -492,7 +493,7 @@ def main()
     init()
 
     puts "Loading complete!"
-    puts "\e[H\e[2J" #comment for debug during setup
+    puts "\e[H\e[2J" #comment for debugging text
     intro()
     while true
         puts ""
