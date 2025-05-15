@@ -10,6 +10,21 @@ class Item
         @held = false
         @used = false
     end
+    
+    # Beskrivning:     paketerar variablerna till ett item i en lättseparabel sträng 
+    # Argument 2:      @location - vart man är.
+    # Argument 3:      @usable_with - vad man kan använda item:et med.
+    # Argument 4:      @useLocation - vart man kan använda item:et.
+    # Argument 5:      @held - om man har item:et 
+    # Argument 6:      @used - om man har använt item:et
+    # Return 2:        string - ett lättseparabel sträng inehållande värdet på variablerna till ett item
+    # Exempel:
+    # $items = [{Item["pengar", "jarntorget", "henrik", "boltcutterStore", true, false]}, {Item["baby", "langgatan", "dörr", "bakom_bion", false, false]}]     
+    # items[0].inspect #=> "pengar;;jarntorget;;henrik;;boltcutterStore;;true;;faalse;;"
+    # items[1].inspect #=> "baby;;langgatan;;dörr;;bakom_bion;;false;;false;;"
+
+    # Datum:               25-05-15
+    # Namn:                Robin A. & Melker W.
 
     def inspect
         output = ""
@@ -43,6 +58,25 @@ class Item
         @used = used
     end
 
+    # Beskrivning:     Ger oss item:et vi söker och returnerar true om vi är på rätt plats, inte använt item:et innan, och inte redan har item:et.
+    # Argument 1:      @location - vart item:et är.
+    # Argument 2:      $location - vart användaren är.
+    # Argument 3:      @held - om man har item:et som sökes plockas upp.
+    # Argument 4:      @used - om man redan har använt item:et innan.
+    # Return 1:        bool - true om man lyckades med att plocka upp item:et, annars false.  
+    # Return 2:        @held - tilldelar @held värdet true om man kan plocka upp item:et.
+    # Exempel:
+    # $items = [{Item[@location = "jarntorget", @held = true, @used = false]}, {Item[@location = "langgatan", @held = false, @used = false]}, {Item[@location = "langgatan", @held = false, @used = true]}]     
+    # $location = jarntorget
+    # $items[0].pick_up #=> false (redan i inventory)
+    # $items[1].pick_up #=> false (fel plats)
+    # $locaion = langgatan
+    # $items[1].pick_up #=> true
+    # $items[2].pick_up #=> false (redan använd)
+
+    # Datum:               25-05-15
+    # Namn:                Robin A. & Melker W.
+
     def pick_up
         if $location != @location || @used
             puts "Det finns ingen " + name + " här."
@@ -50,11 +84,28 @@ class Item
             puts "Du har redan " + name + "."
         else
             @held = true
-            puts "Du har nu " + name + "."
+            puts "- Du har nu " + name + "."
             return true
         end
         return false
     end
+
+    # Beskrivning:         Kollar om spelaren håller i ett item, och om item:et kan användas med 'target'. Den skriver ut olika text baserat på det, och returnerar true ifall man använde item(annars false).
+    # Argument 1:          string - det item:et försöker användas med
+    # Argument 2:          @held - om man har item:et
+    # Return 1:            bool - returnerar true om man kan använda item:et på den platsen och med 'target', annars returneras false.
+    # Return 2:            String - skriver ut "Du har inte (objekt)." om man inte har item:et som behövs, annars "Du försöker använda '@name' med 'target', men inget händer." om du inte kan använda item:et med 'target'.
+    # Exempel:
+    # $items = [{Item[@usable_with = "henrik", @useLocation = "boltcutterStore", @held = true]}, {Item[@usable_with = "dörr", @useLocation = "bakom_bion", @held = false]}]
+    # $plats = "boltcutterStore"
+    # items[0].use("henrik") #=> true
+    # items[1].use("dörr") #=> false (inte i inventoryt, är på fel plats)
+    # items[0].use("banan") #=> false (invalid target)
+    # $plats = "jarntorget"
+    # items[0].use("henrik") #=> false (är på fel plats)
+    
+    # Datum:               25-05-15
+    # Namn:                Robin A. & Melker W.
 
     def use(target)
         if !@held
@@ -64,7 +115,7 @@ class Item
             @used = true
             return true
         else
-            puts "Du försöker använda " + @name + " med " + target + ", men det funkar inte."
+            puts "Du försöker använda " + @name + " med " + target + ", men inget händer."
         end
         return false
     end
@@ -84,18 +135,24 @@ $location = "jarntorget"
 $harBaby = false
 $kastatBaby = false
 $buyFails = 0
-TextSpeed = 0
+TextSpeed = 0.85
 
-# Beskrivning:         Söker igenom arrayen '$items' efter en viss sträng, och returnerar strängen om den existerar, annars returnerar den nil. (aka söker i inventory)
+# Beskrivning:         Söker igenom arrayen '$items' efter ett item med ett visst namn, och returnerar det item:et om det existerar. Annars returneras nil. (aka söker i inventory)
 # Argument 1:          Sträng - '@name' i item:et som letas efter
 # Argument 2:          Den globala arrayen '$items'
 # Return:              Sträng/nil - returnerar objektet inuti '$items' med matchande namn om det finns, annars returneras nil.
 # Exempel:
 # $items = [{Item["pengar", "jarntorget", "henrik", "boltcutterStore", true, false]}, {Item["baby", "langgatan", "dörr", "bakom_bion", false, false]}]     
-# getItem("pengar") #=> {Item["pengar", "jarntorget", "henrik", "boltcutterStore"]}
+# getItem("pengar") #=> {Item["pengar", "jarntorget", "henrik", "boltcutterStore", true, false]}
+# getItem("baby") #=> {Item["baby", "langgatan", "dörr", "bakom_bion", false, false]}
+# getItem("boltcutters") #=> nil
+# Exempel på användning:
 # getItem("pengar").held? #=> true
 # getItem("baby").name #=> "baby"
-# getItem("boltcutters") #=> nil
+
+# Datum:               25-05-15
+# Namn:                Robin A. & Melker W.
+
 def getItem(query)
     i = 0
     while i < $items.length
@@ -142,8 +199,7 @@ end
 # Exempel:         
 # save()  (Arg1: $items = [{item1}, {item2}], $location = "stigbergstorget", $harBaby = true, $kastatBaby = true, $buyFails = 2) ==> Return1: savefile.txt; Return2: Terminal #> "Sparat!"
 # (Se example_savefile.txt för hur en sparfil kan se ut.)
-...  ...  ...  ...
-...  ...  ...  ...     
+
 # Datum:               25-05-10
 # Namn:                Robin A. & Melker W.
 
@@ -259,7 +315,6 @@ def action()
                 puts "Ogiltig handling. Försök igen."
             end
             puts ""
-            sleep TextSpeed
             puts "Vad vill du göra?"
             puts ""
             user_input = gets.chomp.split
@@ -280,14 +335,37 @@ def intro()
     puts "Du vaggar fram i haga tills du ser en mattruck, med kebab dessutom!"
     sleep TextSpeed
     puts "Din mage leder dig fram till ståndet och fulla du langar över 70 riksdaler för en kebabrulle."
+    sleep TextSpeed
+    puts "Kebabrullen var g u d o m l i g , och i din eufori märker du inte mannens hotfulla leende."
+    sleep TextSpeed
+    puts "Och efter du svalt den sista tuggan blir allting svart."
+    puts ""
+    sleep 3
+    puts "Du vaknar upp en okänd tid senare. Månen är fortfarande dominant i skyn, och vägarna är tomma."
+    sleep TextSpeed
+    puts "Du vacklar runt på vägarna, bakfull som aldrig förr, och utan telefon eller plånbok."
+    sleep TextSpeed
+    puts "Efter ett tag tar du dig fram till en välkommen syn, nämligen järntorgets utspridda plaza."
     puts ""
     sleep TextSpeed
+    puts "Vid dina sinnens inte riktigt fulla bruk dyker en enda tanke upp i ditt uppklarnande huvud:"
+    puts ""
+    sleep TextSpeed * 1.5
+    puts "Du måste ha den där kebaben igen."
+    sleep 3
 end
 
 def jarntorget()
-    puts "Du ankommer till järntorget. Det är tyst."
+    puts "Du står vid järntorget. Det är helt tomt."
     sleep TextSpeed
-    puts (!getItem("pengar").held? ? "Brevid hållplatsen ser du en stor fontän i järn, med glänsande vatten." : "Brevid hållplatsen ser du en stor fontän i järn. Vattnet glänser inte längre.")
+    print "Här brukar det röra sig folk hela tiden, men just nu är ingen annan här. "
+    sleep TextSpeed
+    print "Det är tyst. "
+    sleep TextSpeed
+    puts "För tyst."
+    sleep TextSpeed
+    print "Brevid hållplatsen ser du en stor fontän i järn"
+    puts ((!getItem("pengar").held?||getItem("pengar").used?) ? ", med glänsande vatten." : ". Vattnet glänser inte längre.")
     while true
         action = action() #ex.=> "kolla dörrmatta"
         if action == "kolla fontän"
@@ -324,15 +402,37 @@ end
 
 def langgatan()
     puts "Du vandrar ner för långgatan. Till höger ser du järntorget i horisonten och till vänster en suspekt bra placerad boltcutteraffär."
+    sleep TextSpeed
+    puts "Längs gatan står en till synes övergiven barnvagn. Du hör konstiga ljud från den."
     while true
         action = action() #ex.=> "kolla dörrmatta"
         if action == "gå affär" || action == "gå boltcutteraffär"
             puts "Du går in i boltcutteraffären."
             $location = "boltcutterStore"
             return nil
-        elsif action == "placeholder"
-            
-            
+        elsif action == "kolla barnvagn"
+            if !$harBaby
+                puts "Du går närmare barnvagnen, och ser att den är fastlåst i ett cykelställ."
+                sleep TextSpeed
+                puts "I barnvagnen sitter en baby, som onekligen är källan till de konstiga ljuden."
+                sleep TextSpeed
+                puts "Du är osäker på om den är glad eller ledsen, men när den ser dig verkar den vilja att du gör något."
+            else
+                puts "Du går tillbaka till barnvagnen. Den fortfarande fastlåst, men nu tom."
+            end
+        elsif action == "ta baby"
+            if !$harBaby
+                puts "Du kollar runt, även om du inte sett någon annan än babyn utomhus."
+                sleep TextSpeed
+                puts "Som förväntat är ingen här, och du tar tillfället i akt för att lyfta babyn ur barnvagnen."
+                sleep TextSpeed
+                puts "Denn verkar tycka om dig."
+                sleep TextSpeed
+                puts "- Du har nu en baby."
+                $harBaby = true
+            else
+                puts "Du har redan babyn. Den vinkar tillbaka mot sitt gamla hem."
+            end
         elsif action == "gå tillbaka"
             puts "Du går tillbaka till Järntorget."
             $location = "jarntorget"
@@ -344,7 +444,11 @@ def langgatan()
 end
 
 def boltcutterStore()
-    puts "du är i den suspekta boltcutteraffären. Den är fylld med boltcutter."
+    puts "Du är nu i den suspekta boltcutteraffären."
+    sleep TextSpeed
+    puts "Runt omkring dig ser du ett flertal hyllor fyllda med boltcutters i alla tänkbara storlekar och prisklasser."
+    sleep TextSpeed
+    puts "Vid kassan ser du en halvsovande kassör. På hennes tröja ser du en namnskylt med orden 'Hej, jag heter Henrik'."
     while true
         action = action() #ex.=> "kolla dörrmatta"
         if action == "placeholder"
@@ -422,7 +526,7 @@ def framfor_bion()
     puts "Framför dig har du en dörr in i byggnaden, och vid sidan en grind till baksidan."
     while true
         action = action() #ex.=> "kolla dörrmatta"
-        if action == "placeholder"
+        if action == "gå dörr"
             
         elsif action == "använd boltcutters"
             puts "låset faller ner på marken med ett kling, och grinden öppnas."
@@ -474,13 +578,19 @@ end
 
 def ending()
     puts ""
-    puts "Du vaknar upp på toaletten på bion, extremt hangover."
+    puts "Du vaknar upp på toaletten inne på bion, extremt hangover."
     sleep TextSpeed
-    puts "Du kollar telefonen, det är morgon. Du går ut och njutar av dagen, med en lätt bismak av kebab."
+    puts "Du kollar dina fickor, och förutom plånbok och mobil har du även boltcutters av någon anledning."
+    sleep TextSpeed
+    puts "Du kollar på din telefon, och det är elva på förmiddagen. Du har tre notiser från vänner som frågar ifall du kom hem säkert."
+    sleep TextSpeed
+    puts "Du vinglar dig ut ur båset och tar dig ut ur huvuddörren. Det är en strålande dag utanför."
     if $kastatBaby
         puts ""
         sleep TextSpeed
-        puts "Sen blir du arresterad för våld mot barn. Rätt åt dig!"
+        puts "En patrullbil passerar och stannar framför dina fötter. Två beväpnade poliser häktar dig."
+        sleep TextSpeed
+        puts "Du har tydligen behått misshandel på en bebis eller liknande. Vad är ditt problem?"
     end
     puts ""
     sleep TextSpeed
