@@ -1,4 +1,3 @@
-puts "\e[H\e[2J"
 puts "Loading..."
 
 class Item
@@ -12,12 +11,12 @@ class Item
     end
     
     # Beskrivning:     paketerar variablerna till ett item i en lättseparabel sträng 
-    # Argument 2:      @location - vart man är.
-    # Argument 3:      @usable_with - vad man kan använda item:et med.
-    # Argument 4:      @useLocation - vart man kan använda item:et.
-    # Argument 5:      @held - om man har item:et 
-    # Argument 6:      @used - om man har använt item:et
-    # Return 2:        string - ett lättseparabel sträng inehållande värdet på variablerna till ett item
+    # Argument 2:      @location (string) - vart användaren är
+    # Argument 3:      @usable_with (string) - vad man kan använda item:et med
+    # Argument 4:      @useLocation (string) - vart man kan använda item:et
+    # Argument 5:      @held (bool) - om man har item:et eller inte
+    # Argument 6:      @used (bool) - om man har använt item:et eller inte
+    # Return 2:        output (string) - ett lättseparabel sträng inehållande värdet på variablerna till ett item
     # Exempel:
     # $items = [{Item["pengar", "jarntorget", "henrik", "boltcutterStore", true, false]}, {Item["baby", "langgatan", "dörr", "bakom_bion", false, false]}]     
     # items[0].inspect #=> "pengar;;jarntorget;;henrik;;boltcutterStore;;true;;faalse;;"
@@ -59,12 +58,12 @@ class Item
     end
 
     # Beskrivning:     Ger oss item:et vi söker och returnerar true om vi är på rätt plats, inte använt item:et innan, och inte redan har item:et.
-    # Argument 1:      @location - vart item:et är.
-    # Argument 2:      $location - vart användaren är.
-    # Argument 3:      @held - om man har item:et som sökes plockas upp.
-    # Argument 4:      @used - om man redan har använt item:et innan.
-    # Return 1:        bool - true om man lyckades med att plocka upp item:et, annars false.  
-    # Return 2:        @held - tilldelar @held värdet true om man kan plocka upp item:et.
+    # Argument 1:      @location (string) - vart item:et är
+    # Argument 2:      $location (string) - vart användaren är
+    # Argument 3:      @held (bool) - om man har item:et som försöker plockas upp eller inte
+    # Argument 4:      @used (bool) - om man redan har använt item:et innan eller inte
+    # Return 1:        (bool) - baserat på huruvida man lyckades med att plocka upp item:et eller inte
+    # Return 2:        @held (bool) - tilldelar @held värdet true om man lyckas plocka upp item:et
     # Exempel:
     # $items = [{Item[@location = "jarntorget", @held = true, @used = false]}, {Item[@location = "langgatan", @held = false, @used = false]}, {Item[@location = "langgatan", @held = false, @used = true]}]     
     # $location = jarntorget
@@ -91,10 +90,10 @@ class Item
     end
 
     # Beskrivning:         Kollar om spelaren håller i ett item, och om item:et kan användas med 'target'. Den skriver ut olika text baserat på det, och returnerar true ifall man använde item(annars false).
-    # Argument 1:          string - det item:et försöker användas med
-    # Argument 2:          @held - om man har item:et
-    # Return 1:            bool - returnerar true om man kan använda item:et på den platsen och med 'target', annars returneras false.
-    # Return 2:            String - skriver ut "Du har inte (objekt)." om man inte har item:et som behövs, annars "Du försöker använda '@name' med 'target', men inget händer." om du inte kan använda item:et med 'target'.
+    # Argument 1:          target (string) - det item:et försöker användas med
+    # Argument 2:          @held (bool) - om man har item:et eller inte
+    # Return 1:            (bool) - returnerar true om man kan använda item:et på den platsen och med 'target', annars returneras false
+    # Return 2:            (string) - skriver ut "Du har inte (item)." om man inte har item:et som behövs, annars "Du försöker använda '@name' med 'target', men inget händer." om du inte kan använda item:et med 'target'
     # Exempel:
     # $items = [{Item[@usable_with = "henrik", @useLocation = "boltcutterStore", @held = true]}, {Item[@usable_with = "dörr", @useLocation = "bakom_bion", @held = false]}]
     # $plats = "boltcutterStore"
@@ -135,12 +134,12 @@ $location = "jarntorget"
 $harBaby = false
 $kastatBaby = false
 $buyFails = 0
-TextSpeed = 0.85
+TextSpeed = 0.9
 
 # Beskrivning:         Söker igenom arrayen '$items' efter ett item med ett visst namn, och returnerar det item:et om det existerar. Annars returneras nil. (aka söker i inventory)
-# Argument 1:          Sträng - '@name' i item:et som letas efter
-# Argument 2:          Den globala arrayen '$items'
-# Return:              Sträng/nil - returnerar objektet inuti '$items' med matchande namn om det finns, annars returneras nil.
+# Argument 1:          query (string) - '@name' i item:et som letas efter
+# Argument 2:          $items (array) - en array innehållande alla items i spelet och deras information
+# Return:              (sträng/nil) - returnerar objektet inuti '$items' med matchande namn om det finns, annars returneras nil
 # Exempel:
 # $items = [{Item["pengar", "jarntorget", "henrik", "boltcutterStore", true, false]}, {Item["baby", "langgatan", "dörr", "bakom_bion", false, false]}]     
 # getItem("pengar") #=> {Item["pengar", "jarntorget", "henrik", "boltcutterStore", true, false]}
@@ -253,11 +252,16 @@ def action()
             elsif user_input[0] == "gå"
                 return "gå " + user_input[1]
             elsif user_input[0] == "ta"
-                item = getItem(user_input[1])
-                if item != nil
-                    item.pick_up
+                if user_input[1] == "baby"
+                    return "ta baby"
                 else
-                    puts "Det finns ingen " + user_input[1] + " här."
+                    item = getItem(user_input[1])
+                    if item != nil
+                        item.pick_up
+                        return "ta " + user_input[1]
+                    else
+                        puts "Det finns ingen " + user_input[1] + " här."
+                    end
                 end
             elsif user_input[0] == "köp"
                 if $location != "boltcutterStore"
@@ -314,8 +318,7 @@ def action()
             else
                 puts "Ogiltig handling. Försök igen."
             end
-            puts ""
-            puts "Vad vill du göra?"
+            puts "Tips: skriv 'hjälp' för en lista över saker du kan göra!"
             puts ""
             user_input = gets.chomp.split
         end
@@ -352,7 +355,9 @@ def intro()
     puts ""
     sleep TextSpeed * 1.5
     puts "Du måste ha den där kebaben igen."
-    sleep 3
+    puts ""
+    print "-Tryck enter för att fortsätta-"
+    gets
 end
 
 def jarntorget()
@@ -601,9 +606,9 @@ end
 
 def main()
     init()
-
     puts "Loading complete!"
     puts "\e[H\e[2J" #comment for debugging text
+
     intro()
     while true
         puts ""
