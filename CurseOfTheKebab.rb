@@ -343,7 +343,7 @@ def intro()
     sleep TextSpeed
     puts "Och efter du svalt den sista tuggan blir allting svart."
     puts ""
-    sleep 3
+    sleep TextSpeed
     puts "Du vaknar upp en okänd tid senare. Månen är fortfarande dominant i skyn, och vägarna är tomma."
     sleep TextSpeed
     puts "Du vacklar runt på vägarna, bakfull som aldrig förr, och utan telefon eller plånbok."
@@ -353,7 +353,7 @@ def intro()
     sleep TextSpeed
     puts "Vid dina sinnens inte riktigt fulla bruk dyker en enda tanke upp i ditt uppklarnande huvud:"
     puts ""
-    sleep TextSpeed * 1.5
+    sleep TextSpeed
     puts "Du måste ha den där kebaben igen."
     puts ""
     print "-Tryck enter för att fortsätta-"
@@ -458,7 +458,7 @@ def boltcutterStore()
         action = action() #ex.=> "kolla dörrmatta"
         if action == "placeholder"
 
-        elsif action == "köp boltcutters" # ROBIN SKRIV NÄR DU KAN PLS THANK UU <3 | OKIIII FIXAT :3
+        elsif action == "köp boltcutters"
             if getItem("pengar").held?
                 getItem("pengar").use("Henrik")
                 puts "Du ger de våta mynten till Henrik. Hon tittar tillbaka med en trött blick."
