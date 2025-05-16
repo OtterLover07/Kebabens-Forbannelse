@@ -316,6 +316,7 @@ def action()
             else
                 puts "Ogiltig handling. Försök igen."
             end
+            puts ""
             puts "Tips: skriv 'hjälp' för en lista över saker du kan göra!"
             puts ""
             user_input = gets.chomp.split
