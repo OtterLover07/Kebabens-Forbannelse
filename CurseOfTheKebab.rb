@@ -299,14 +299,12 @@ def action()
                 puts ""
                 i = 0
                 nope = 0
+                puts "Du har:"
                 while i < $items.length
                     if $items[i].held?
-                        if nope == 0
-                            puts "Du har:"
-                        end
                         print " - "
                         puts $items[i].name
-                        nope += 1
+                        nope = 1.5
                     else
                         nope += 1
                     end
@@ -460,7 +458,7 @@ def boltcutterStore()
 
         elsif action == "köp boltcutters"
             if getItem("pengar").held?
-                getItem("pengar").use("Henrik")
+                getItem("pengar").use("henrik")
                 puts "Du ger de våta mynten till Henrik. Hon tittar tillbaka med en trött blick."
                 sleep TextSpeed
                 puts "Hon mumlar 'Good enough...' och ger dig ett par boltcutters."
